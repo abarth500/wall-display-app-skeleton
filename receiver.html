@@ -1,0 +1,41 @@
+<!DOCTYPE html><html>
+<head lang="ja">
+	<title>Wall Display's Canvas @ Johoku Kashika Densannki Factory</title>
+	<meta charset="utf-8">
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"> </script>
+	<script src="http://ajax.googleapis.com/ajax/libs/ext-core/3.1.0/ext-core.js"></script>
+	<script src="/lib/wdcanvas.js"></script>
+	<script>
+Ext.onReady(function(){
+	
+	var receiver = new WDCanvas.Receiver({});
+	
+	//ÉåÉCÉÑÅ[ÇÃì«Ç›çûÇ›
+	var lay_div = receiver.requireLayer(WDCanvas.Layer.Div);
+	var lay_gmap = receiver.requireLayer(WDCanvas.Layer.GMAP);
+	
+	receiver.onReady(function(){
+		//append listener for MSG01. argument=(message-id,listener-function,scope);
+		receiver.appendListener("MSG01",function(message){
+			console.log("MSG01:\t"+JSON.stringify(message));
+		},this);
+		
+		//append listener for MSG02. argument=(message-id,listener-function,scope);
+		receiver.appendListener("MSG02",function(message){
+			console.log("MSG02:\t"+JSON.stringify(message));
+		},this);
+		
+		//append listener for MSG03 on lay_div.
+		receiver.appendListenerToLayer(lay_div,"MSG03",function(message){
+			console.log("MSG03:\t"+JSON.stringify(message));
+		},this);
+		
+		Ext.get("textarea").dom.value=JSON.stringify(receiver.CONF);
+	},this);
+});
+	</script>
+</head>
+<body style="font-size:70px;">
+<textarea id="textarea" rows="40" cols="80" style="position:absolute;top:120px;left:120px;"></textarea>
+</body>
+</html>

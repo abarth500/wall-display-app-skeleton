@@ -1,0 +1,115 @@
+<!DOCTYPE html><html>
+<head lang="ja">
+	<title>Wall Display's Canvas @ Johoku Kashika Densannki Factory</title>
+	<meta charset="utf-8">
+	<style type="text/css">
+.button:hover{
+	background-color:#e8383d!important;
+}
+	</style>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"> </script>
+	<script src="http://ajax.googleapis.com/ajax/libs/ext-core/3.1.0/ext-core.js"></script>
+	<script src="../../lib/wdcanvas.js"></script>
+	<script>
+Ext.onReady(function(){
+	
+	//Initialize commander object
+	var commander = new WDCanvas.Commander({});
+	
+	//Load layer object
+	var lay_div = commander.requireLayer(WDCanvas.Layer.Div);
+	var lay_gmap = commander.requireLayer(WDCanvas.Layer.GMAP);
+	
+	//This is option for gmap layer
+	var map_status = {
+		lat:35.681382,
+		lon:139.766084,
+		zoom:8,
+		type:google.maps.MapTypeId.TERRAIN
+	};
+	
+	var map = null;
+	var geocoder = null;
+	var div_map = null;
+	var div_title = null;
+	
+	//this function called when all receiver is ready
+	commander.onReady(function(){
+		//create new instance of layers
+		div_title = commander.createLayer(
+			lay_div,
+			new WDCanvas.Bounds({
+				"top":0,
+				"left":0,
+				"width":"50%",
+				"height":"50%"
+			})
+		);
+		div_title.setStyle({
+			"backgroundColor":"#006e54",
+			"fontSize":"190px",
+			"color":"#ffffff",
+			"text-align":"left",
+			"padding":"80px"
+		});
+		div_map = commander.createLayer(
+			lay_gmap,
+			new WDCanvas.Bounds({
+				"top":"50%",
+				"left":"50%",
+				"width":"50%",
+				"height":"50%"
+			})
+		);
+		
+		//append to the tiled display wall!
+		div_map.append(map_status);
+		div_title.append();
+		
+		//Initialize of GUI
+		Ext.get("runMSG01").on("click",function(){
+			var message = Ext.get("MSG01").dom.value;
+			//Send Message to all displays arguments=(message-id,json-of-message)
+			commander.fire("MSG01",{"message":message,"time":(new Date()).toUTCString()});
+		},this);
+		Ext.get("runMSG02").on("click",function(){
+			var message = Ext.get("MSG02").dom.value;
+			//Send Message to all displays arguments=(message-id,json-of-message,array-of-tiles)
+			commander.fire("MSG02",{"message":message,"time":(new Date()).toUTCString()},
+				[{x:1,y:0},{x:2,y:0},{x:1,y:1},{x:2,y:1}]);
+		},this);
+		Ext.get("runMSG03").on("click",function(){
+			var message = Ext.get("MSG03").dom.value;
+			//Send Message to all displays arguments=(message-id,json-of-message,array-of-tiles)
+			div_title.fire("MSG03",{"message":message,"time":(new Date()).toUTCString()});
+		},this);
+		Ext.get("runMSG04").on("click",function(){
+			var map_status = {"zoom":parseInt(Ext.get("MSG04").dom.value)};
+			//Send Message to all displays arguments=(message-id,json-of-message,array-of-tiles)
+			div_map.fire("map_change",map_status);
+		},this);
+	},this);
+});
+	</script>
+</head>
+<body style="background-color:#fff;">
+<p>
+<h1>Send Message to Tiles</h1>
+Case1: Send messages to all receivers.<br/>
+<input type="text" value="Hello!" id="MSG01".><input type="button" value="send to all displays" id="runMSG01"/>
+</p>
+<p>
+Case2: Send messages to the tiles of (1,0), (2,0), (1,1), and (2.1).<br/>
+<input type="text" value="Ciao!" id="MSG02".><input type="button" value="send to ths displays" id="runMSG02"/>
+</p>
+<h1>Send Messages to a Layer</h1>
+<p>
+Case3: Send messages to the layer, <i>div_title</i>.<br/>
+<input type="text" value="Hi" id="MSG03"><input type="button" value="send to the layer" id="runMSG03"/>
+</p>
+<p>
+Case4: Send built-in messages to the layer, <i>div_gmap</i>.<br/>
+<input type="text" value="18" id="MSG04"><input type="button" value="Change the zoom level" id="runMSG04"/>
+</p>
+</body>
+</html>

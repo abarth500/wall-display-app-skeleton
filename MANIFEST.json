@@ -1,0 +1,20 @@
+{
+	"url":{
+		"channel":"http://white.cs.inf.shizuoka.ac.jp/channel/SKELETON/",
+		"messenger":"ws://white.cs.inf.shizuoka.ac.jp:8800"
+	},
+	"info":{
+		"name":"SKELETON CHANNEL",
+		"description":"Please make a new copy!",
+		"version":"1",
+		"author":"Shohei Yokoyama",
+		"icon":"http://farm9.staticflickr.com/8018/7453002818_51983f1d9e_o.png"
+	},
+	"kinect":true,
+	"resolution":{
+		"minW":1024,
+		"maxW":50000,
+		"minH":768,
+		"maxH":50000
+	}
+}
