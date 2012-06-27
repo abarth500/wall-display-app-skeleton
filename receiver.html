@@ -1,6 +1,6 @@
 <!DOCTYPE html><html>
 <head lang="ja">
-	<title>Wall Display's Canvas @ Johoku Kashika Densannki Factory</title>
+	<title>Wall Display Canvas @ Johoku Kashika Densannki Factory</title>
 	<meta charset="utf-8">
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"> </script>
 	<script src="http://ajax.googleapis.com/ajax/libs/ext-core/3.1.0/ext-core.js"></script>
@@ -18,21 +18,56 @@ Ext.onReady(function(){
 		//append listener for MSG01. argument=(message-id,listener-function,scope);
 		receiver.appendListener("MSG01",function(message){
 			console.log("MSG01:\t"+JSON.stringify(message));
+			showMessageBox("MSG01:<br/>"+JSON.stringify(message));
 		},this);
 		
 		//append listener for MSG02. argument=(message-id,listener-function,scope);
 		receiver.appendListener("MSG02",function(message){
 			console.log("MSG02:\t"+JSON.stringify(message));
+			showMessageBox("MSG02:<br/>"+JSON.stringify(message));
 		},this);
 		
 		//append listener for MSG03 on lay_div.
 		receiver.appendListenerToLayer(lay_div,"MSG03",function(message){
 			console.log("MSG03:\t"+JSON.stringify(message));
+			showMessageBox("MSG03:<br/>"+JSON.stringify(message));
 		},this);
 		
 		Ext.get("textarea").dom.value=JSON.stringify(receiver.CONF);
 	},this);
 });
+
+function showMessageBox(message){
+	var mbox = document.createElement("div");
+	var width = Ext.get("full").getWidth()*0.8;
+	var height = Ext.get("full").getHeight()*0.8;
+	console.log(width+"\t"+height);
+	mbox.style.position = "absolute";
+	mbox.style.top = "50%";
+	mbox.style.left = "50%";
+	mbox.style.width = width+"px";
+	mbox.style.height = height+"px";
+	mbox.style.backgroundColor = "#000";
+	mbox.style.marginLeft = "-"+Math.round(width/2)+"px";
+	mbox.style.marginTop = "-"+Math.round(height/2)+"px";
+	mbox.style.lineHeight = Math.round(height/6)+"px";
+	mbox.style.textAlign = "center";
+	mbox.style.color = "#fff";
+	mbox.style.display="none";
+	mbox.style.fontSize =Math.round(height/8)+"px";
+	mbox.innerHTML = message;
+	mbox = new Ext.Element(mbox);
+	var task = new Ext.util.DelayedTask(function(){
+		mbox.hide({
+			"callback":function(){
+				mbox.remove();
+			}
+		});
+	});
+	Ext.getBody().appendChild(mbox);
+	mbox.show(true);
+	task.delay(5000);
+}
 	</script>
 </head>
 <body style="font-size:70px;">
